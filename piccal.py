@@ -4,10 +4,24 @@ from cal import Cal
 from PIL import Image, ImageDraw
 
 class PicCal:
-    def __init__(self, padding_width, img_file_name, calx, caly,
-                 font_file, calw, calh, year, mon):
+    def __init__(self,
+                 padding_width, font_file,
+                 calx, caly,
+                 calw, calh,
+                 year, mon,
+                 img_file_name = None,
+                 img = None):
+        print "Draw calendar at: ", calx, caly, calw, calh
+
         self._pw = padding_width
-        self._img = Image.open(img_file_name, 'r')
+
+        if img_file_name != None:
+            self._img = Image.open(img_file_name, 'r')
+        elif img != None:
+            self._img = img
+        else:
+            raise Exception("No img_file_name specified or img provided")
+
         self._img.convert("RGBA")
         self._cx = calx
         self._cy = caly
@@ -30,9 +44,16 @@ class PicCal:
 
     def makeImage(self):
         self.drawPaddingBox()
-        cal = Cal(self._font_file, self._cw, self._ch, self._y, self._m,
-                       draw_on = self._img, draw_x = self._cx, draw_y = self._cy)
+        cal = Cal(self._font_file,
+                  self._cw - self._pw * 2, self._ch - self._pw * 2,
+                  self._y, self._m,
+                  draw_on = self._img,
+                  draw_x = self._cx + self._pw, draw_y = self._cy + self._pw)
         cal.makeImage()
+
+    def getImage(self):
+        self.makeImage()
+        return self._img
 
     def showImage(self):
         self.makeImage()
@@ -50,5 +71,9 @@ if __name__ == "__main__":
     cal_y      = int(sys.argv[7])
     img_file   = sys.argv[8]
 
-    pc = PicCal(10, img_file, cal_x, cal_y, font_file, cal_width, cal_height, year, mon);
+    pc = PicCal(10, font_file,
+                cal_x, cal_y,
+                cal_width, cal_height,
+                year, mon,
+                img_file_name = img_file);
     pc.showImage()
