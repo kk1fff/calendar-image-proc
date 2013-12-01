@@ -42,7 +42,7 @@ def MakeCalendarWithTemplate(font_file, year, mon,
     return pc.getImage()
 
 # expected command:
-# easy-cal.py <year> <mon> <font> <background_file>
+# easy-cal.py [-stdout] <year> <mon> <font> <background_file>
 if __name__ == "__main__":
     import sys
 
@@ -52,9 +52,18 @@ if __name__ == "__main__":
         "box": [0, 0, 0.5, 1]
     }
 
-    im = MakeCalendarWithTemplate(sys.argv[3],
-                                  int(sys.argv[1]),
-                                  int(sys.argv[2]),
-                                  temp,
-                                  sys.argv[4])
-    im.show()
+    argv = sys.argv[1:]
+    to_stdout = False
+    if argv[0] == '-stdout':
+        to_stdout = True
+        argv.pop(0)
+
+    im = MakeCalendarWithTemplate(argv[2],          # Font file
+                                  int(argv[0]),     # Year
+                                  int(argv[1]),     # Month
+                                  temp,             # Template
+                                  argv[3])          # Background file.
+    if to_stdout:
+        im.save(sys.stdout, 'JPEG', quality=100)
+    else:
+        im.show()

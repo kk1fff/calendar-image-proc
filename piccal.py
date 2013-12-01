@@ -11,8 +11,6 @@ class PicCal:
                  year, mon,
                  img_file_name = None,
                  img = None):
-        print "Draw calendar at: ", calx, caly, calw, calh
-
         self._pw = padding_width
 
         if img_file_name != None:
