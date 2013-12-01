@@ -13,16 +13,38 @@ class Cal:
     def getSingleTextBox(w, h):
         return w/7, h/7
 
+    @staticmethod
+    def getDaySpec(year_month):
+        return monthrange(year_month[0], year_month[1])
+
     """
     We can draw on a existed image by passing the image through
     draw_on argument and specifying draw_x, draw_y for position of
     upper left of calendar
+
+    @param year_month
+           a 2-tuple that contains (year, month). where the range of
+           month is 1-12.
+    @param day_spec
+           a 2-tuple that contains the weekday of the first day of the
+           month and the length in terms of day of the month.
+           the weekday's range is 0-6, where 0 is Sunday.
     """
-    def __init__(self, font_file, width, height, year, month,
-                 background="white", draw_on = None, draw_x = 0, draw_y = 0,
+    def __init__(self, font_file,
+                 width, height,
+                 year_month = None,
+                 day_spec = None,
+                 background="white",
+                 draw_on = None,
+                 draw_x = 0, draw_y = 0,
                  font_size = 0):
-        self._year = year
-        self._month = month
+        if year_month != None:
+            self._day_spec = Cal.getDaySpec(year_month)
+        elif day_spec != None:
+            self._day_spec = day_spec
+        else:
+            raise Exception("year_month or day_spec must be specified")
+
         self._h = height
         self._w = width
         self._bg = background
@@ -73,7 +95,7 @@ class Cal:
             self.drawInBox(draw, i, 0, titles[i], "#000000")
 
         # Draw days
-        first_weekday, days = monthrange(self._year, self._month)
+        first_weekday, days = self._day_spec
         for i in range(0, days):
             linear_pos = i + (first_weekday + 1) % 7
             self.drawInBox(draw, linear_pos % 7, math.floor(linear_pos / 7) + 1, str(i + 1),
@@ -97,5 +119,5 @@ if __name__ == "__main__":
     cal_height = int(sys.argv[4])
     font_file  = sys.argv[5]
 
-    cal = Cal(font_file, cal_width, cal_height, year, mon, "white")
+    cal = Cal(font_file, cal_width, cal_height, (year, mon), background="white")
     cal.showImage()

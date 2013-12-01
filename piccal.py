@@ -46,7 +46,7 @@ class PicCal:
         self.drawPaddingBox()
         cal = Cal(self._font_file,
                   self._cw - self._pw * 2, self._ch - self._pw * 2,
-                  self._y, self._m,
+                  (self._y, self._m),
                   draw_on = self._img,
                   draw_x = self._cx + self._pw, draw_y = self._cy + self._pw)
         cal.makeImage()
